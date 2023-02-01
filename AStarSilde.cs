@@ -25,18 +25,16 @@ namespace NS.AStar.Tests
 
 		public class SlideGraph : Graph<(char[], int)>
 		{
-			public int w {get; private set;}
-			public int h {get; private set;}
+			public int s {get; private set;}
 
-			public SlideGraph(int w, int h)
+			public SlideGraph(int s)
 			{
-				this.w = w;
-				this.h = h;
+				this.s = s;
 			}
 
-			public (int, int) OneDToTwoD(int i, int w, int h)
+			public (int, int) OneDToTwoD(int i, int s)
 			{
-				return (i % w, i / w);
+				return (i % s, i / s);
 			}
 
 			public (char[], int) Swap0((char[], int) state, int i)
@@ -59,15 +57,15 @@ namespace NS.AStar.Tests
             public IEnumerable<(char[], int)> GetNeighbors((char[], int) a)
             {
 				int i = a.Item2;
-                var (x, y) = OneDToTwoD(i, w, h);
+                var (x, y) = OneDToTwoD(i, s);
 				if (x != 0)
 					yield return Swap0(a, i - 1);
-				if (x != w - 1)
+				if (x != s - 1)
 					yield return Swap0(a, i + 1);
 				if (y != 0)
-					yield return Swap0(a, i - w);
-				if (y != h - 1)
-					yield return Swap0(a, i + w);
+					yield return Swap0(a, i - s);
+				if (y != s - 1)
+					yield return Swap0(a, i + s);
             }
 
 			public int GetCharPos(char[] a, char c)
@@ -84,8 +82,8 @@ namespace NS.AStar.Tests
 				for (int i = 0; i < a.Item1.Length; i++)
 				{
 					int cI = GetCharPos(a.Item1, end.Item1[i]);
-					var (cX, cY) = OneDToTwoD(cI, w, h);
-					var (eX, eY) = OneDToTwoD(i, w, h);
+					var (cX, cY) = OneDToTwoD(cI, s);
+					var (eX, eY) = OneDToTwoD(i, s);
 					heuristic += Math.Abs(eX - cX) + Math.Abs(eY - cY);
 				}
 
@@ -99,7 +97,7 @@ namespace NS.AStar.Tests
 				for (int i = 0; i < state.Length; i++)
 				{
 					output += state[i];
-					if ((i+1) % w == 0) output += "\n";
+					if ((i+1) % s == 0) output += "\n";
 				}
 
 				return output;
@@ -108,95 +106,55 @@ namespace NS.AStar.Tests
 
         public static void Main()
 		{
-			int s = 4;
-			SlideGraph graph = new(s, s);
-			// (char[], int) start = ("7517BEA24D839FC0".ToCharArray(), s * s - 1);
-			(char[], int) end =   ("123456789ABCDEF0".ToCharArray(), s * s - 1);
-			string input = "3DBC42A9156F78E0";
-			(char[], int) start = (input.ToCharArray(), input.IndexOf('0'));
-			// (char[], int) end =   ("123456780".ToCharArray(), s * s - 1);
-
-			var (path, cost) = AStar.AStarSearch(graph, new SlideNodeEqualityComparer(), start, end);
-
-			Console.WriteLine($"Found path using {cost} steps: ");
-			Console.WriteLine(graph.StateToString(start.Item1));
-
-			Dictionary<int, char> dirToArrow = new()
+			TestSlides(new string[]
 			{
-				{1, '→'}, {-1, '←'}, {s, '↓'}, {-s, '↑'}
-			};
+				"271543860",
+				"472861350",
+				"271384650",
+				"462817350",
+				"267185340",
+				"315642870",
+				"467813250",
+				"354278160"
+			}, 3);
 
-			Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-			for (int i = 1; i < path.Count; i++)
+			TestSlides(new string[]
 			{
-				int dir = path[i].Item2 - path[i-1].Item2;
-				Console.Write($"{dirToArrow[dir]}");
-			}
-			Console.WriteLine();
-
-			Console.WriteLine(graph.StateToString(end.Item1));
-			// Main3x3();
-			// Main4x4();
+				"3DBC42A9156F78E0",
+				"4C8E2F5617D3AB90",
+				"D85A21ECF936B740"
+			}, 4);
 		}
 
-		// public static void Main4x4()
-		// {
-		// 	string[] testInput = new string[]
-		// 	{
-		// 		"3DBC42A9156F78E0",
-		// 		"4C8E2F5617D3AB90",
-		// 		"D85A21ECF936B740"
-		// 	};
+		public static void TestSlides(string[] tests, int s)
+		{
+			if (tests.Length == 0) return;
 
-		// 	SlideNode[] tests = testInput.Select(x => new SlideNode(x.ToCharArray())).ToArray();
-			
-		// 	SlideNode end = new("123456789ABCDEF0".ToCharArray());
-		// 	SlideGraph graph = new(4, 4);
+			(char[], int) end = default;
+			if (s == 4)
+				end = ("123456789ABCDEF0".ToCharArray(), 15);
+			else if (s == 3)
+				end = ("123456780".ToCharArray(), 8);
+			else
+				return;
 
-		// 	System.Diagnostics.Stopwatch stopwatch = new();
-		// 	stopwatch.Start();
+			(char[], int)[] testNodes = tests
+				.Select(x => (x.ToCharArray(), x.IndexOf('0')))
+				.ToArray();
 
-		// 	foreach (SlideNode test in tests)
-		// 	{
-		// 		AStar.AStarSearch(graph, test, end);
-		// 	}
+			SlideGraph graph = new(s);
+			SlideNodeEqualityComparer nodeComparer = new();
 
-		// 	stopwatch.Stop();
-
-		// 	Console.WriteLine($"Solved 4x4 puzzles with an average time of {stopwatch.ElapsedMilliseconds / ((float)tests.Length)}ms");
-		// }
-
-		// public static void Main3x3()
-		// {
-		// 	string[] testInput = new string[]
-		// 	{
-		// 		"271543860",
-		// 		"472861350",
-		// 		"271384650",
-		// 		"462817350",
-		// 		"267185340",
-		// 		"315642870",
-		// 		"467813250",
-		// 		"354278160"
-		// 	};
-
-		// 	SlideNode[] tests = testInput.Select(x => new SlideNode(x.ToCharArray())).ToArray();
-			
-		// 	SlideNode end = new("123456780".ToCharArray());
-		// 	SlideGraph graph = new(3, 3);
-
-		// 	System.Diagnostics.Stopwatch stopwatch = new();
-		// 	stopwatch.Start();
-
-		// 	foreach (SlideNode test in tests)
-		// 	{
-		// 		AStar.AStarSearch(graph, test, end);
-		// 	}
-
-		// 	stopwatch.Stop();
-
-		// 	Console.WriteLine($"Solved 3x3 puzzles with an average time of {stopwatch.ElapsedMilliseconds / ((float)tests.Length)}ms");
-		// }
+            System.Diagnostics.Stopwatch stopwatch = new();
+			stopwatch.Start();
+			int sumMoves = 0;
+			for (int i = 0; i < tests.Length; i++)
+			{
+				var (path, cost) = IDAStar.IDAStarSearch(graph, nodeComparer, testNodes[i], end);
+				sumMoves += cost;
+			}
+			stopwatch.Stop();
+			Console.WriteLine($"Found path in {s}x{s} tests with an average time of {stopwatch.ElapsedMilliseconds/(double)tests.Length}ms and cost of {sumMoves/(double)tests.Length}");
+		}
 	}
 }
