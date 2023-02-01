@@ -1,27 +1,12 @@
 namespace NS.AStar
 {
-	public abstract class Node<TNode>
-		where TNode : Node<TNode>
-	{
-		public override bool Equals(object? obj)
-		{
-			if (obj is TNode other) return EqualsNode(other);
-			return false;
-		}
-
-		public abstract bool EqualsNode(TNode other);
-
-		public abstract override int GetHashCode();
-	}
 
 	public interface Graph<TNode>
-		where TNode : Node<TNode>
 	{
 		// Cost to move from a to the given neighbor of a
 		int MoveCost(TNode a, TNode aNeighbor);
 		// IEnumerable with the neighbors of the node
 		IEnumerable<TNode> GetNeighbors(TNode a);
-
 		// A heuristic for telling if the given node is "close"
 		// to the end node. Must not be negative
 		int Heuristic(TNode a, TNode end);
@@ -29,21 +14,24 @@ namespace NS.AStar
 	
 	public static class AStar
 	{
-		public static (List<TNode>, int) AStarSearch<TNode>(Graph<TNode> graph, TNode start, TNode end)
-			where TNode : Node<TNode>
+		public static (List<TNode>, int) AStarSearch<TNode>(
+			Graph<TNode> graph, 
+			IEqualityComparer<TNode> nodeComparer, 
+			TNode start, TNode end)
 		{
-			Dictionary<TNode, int> G = new();
-			Dictionary<TNode, int> F = new();
+			Dictionary<TNode, int> G = new(nodeComparer) {{start, 0}};
+			Dictionary<TNode, int> F = new(nodeComparer) {
+				{start, graph.Heuristic(start, end)}};
 
 			G[start] = 0;
 			F[start] = graph.Heuristic(start, end);
 
-			HashSet<TNode> closedVertices = new();
+			HashSet<TNode> closedVertices = new(nodeComparer);
 			
 			PriorityQueue<TNode, int> openVertPQueue = new();
 			openVertPQueue.Enqueue(start, F[start]);
 			
-			Dictionary<TNode, TNode> cameFrom = new();
+			Dictionary<TNode, TNode> cameFrom = new(nodeComparer);
 
 			while (openVertPQueue.Count > 0)
 			{
@@ -57,7 +45,7 @@ namespace NS.AStar
 				closedVertices.Add(current);
 
 				// Check if we have reached the goal
-				if (current.EqualsNode(end))
+				if (nodeComparer.Equals(current, end))
 				{
 					// Retrace route backwards
 					List<TNode> path = new() {current};
@@ -87,7 +75,7 @@ namespace NS.AStar
 				}
 			}
 
-			throw new Exception("A* failed to find a solution");
+			throw new Exception($"A* failed to find a solution after searching {F.Count} nodes");
 		}
 	}
 	

@@ -1,0 +1,15 @@
+D:\Unity Projects\AStarCSharp\bin\Debug\net6.0\AStarC#.exe
+D:\Unity Projects\AStarCSharp\bin\Debug\net6.0\AStarC#.deps.json
+D:\Unity Projects\AStarCSharp\bin\Debug\net6.0\AStarC#.runtimeconfig.json
+D:\Unity Projects\AStarCSharp\bin\Debug\net6.0\AStarC#.dll
+D:\Unity Projects\AStarCSharp\bin\Debug\net6.0\AStarC#.pdb
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.csproj.AssemblyReference.cache
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.GeneratedMSBuildEditorConfig.editorconfig
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.AssemblyInfoInputs.cache
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.AssemblyInfo.cs
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.csproj.CoreCompileInputs.cache
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.dll
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\refint\AStarC#.dll
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.pdb
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\AStarC#.genruntimeconfig.cache
+D:\Unity Projects\AStarCSharp\obj\Debug\net6.0\ref\AStarC#.dll
