@@ -69,7 +69,7 @@ namespace NS.AStar.Tests
             }
         }
 
-        public static void Main(string[] args)
+        public static void MainAOC12(string[] args)
         {
             Dictionary<(int, int), char> map = new();
 

@@ -18,6 +18,7 @@ namespace NS.AStar
 			Graph<TNode> graph, 
 			IEqualityComparer<TNode> nodeComparer, 
 			TNode start, TNode end)
+				where TNode : notnull
 		{
 			Dictionary<TNode, int> G = new(nodeComparer) {{start, 0}};
 			Dictionary<TNode, int> F = new(nodeComparer) {
@@ -76,7 +77,7 @@ namespace NS.AStar
 			}
 
 			// throw new Exception($"A* failed to find a solution after searching {F.Count} nodes");
-			return (null, -1);
+			return (new(), -1);
 		}
 	}
 	

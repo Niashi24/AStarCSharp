@@ -27,14 +27,21 @@ namespace NS.AStar.Tests
 		{
 			public int s {get; private set;}
 
+			public (int, int)[] onetotwodarr;
+
 			public SlideGraph(int s)
 			{
 				this.s = s;
+
+				onetotwodarr = Enumerable.Range(0, s * s)
+					.Select(i => OneDToTwoD(i, s))
+					.ToArray();
 			}
 
 			public (int, int) OneDToTwoD(int i, int s)
 			{
-				return (i % s, i / s);
+				int div = Math.DivRem(i, s, out int mod);
+				return (mod, div);
 			}
 
 			public (char[], int) Swap0((char[], int) state, int i)
@@ -57,7 +64,7 @@ namespace NS.AStar.Tests
             public IEnumerable<(char[], int)> GetNeighbors((char[], int) a)
             {
 				int i = a.Item2;
-                var (x, y) = OneDToTwoD(i, s);
+                var (x, y) = onetotwodarr[i];
 				if (x != 0)
 					yield return Swap0(a, i - 1);
 				if (x != s - 1)
@@ -82,8 +89,8 @@ namespace NS.AStar.Tests
 				for (int i = 0; i < a.Item1.Length; i++)
 				{
 					int cI = GetCharPos(a.Item1, end.Item1[i]);
-					var (cX, cY) = OneDToTwoD(cI, s);
-					var (eX, eY) = OneDToTwoD(i, s);
+					var (cX, cY) = onetotwodarr[cI];
+					var (eX, eY) = onetotwodarr[i];
 					heuristic += Math.Abs(eX - cX) + Math.Abs(eY - cY);
 				}
 
@@ -104,7 +111,7 @@ namespace NS.AStar.Tests
 			}
         }
 
-        public static void MainSlide()
+        public static void Main(string[] args)
 		{
 			TestSlides(new string[]
 			{
@@ -125,7 +132,7 @@ namespace NS.AStar.Tests
 				"4C8E2F5617D3AB90",
 				"D85A21ECF936B740"
 			}, 4);
-			// Average time for 4x4: ~100s
+			// Average time for 4x4: ~60s
 			// Number of possible nodes grows factorialy (very high)
 		}
 
