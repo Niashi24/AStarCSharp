@@ -1,30 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Unity Projects\\AStarCSharp\\AStarC#.csproj": {}
+    "C:\\Users\\leosp\\Documents\\Unity Projects\\AStarC#\\AStarC#.csproj": {}
   },
   "projects": {
-    "D:\\Unity Projects\\AStarCSharp\\AStarC#.csproj": {
+    "C:\\Users\\leosp\\Documents\\Unity Projects\\AStarC#\\AStarC#.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Unity Projects\\AStarCSharp\\AStarC#.csproj",
+        "projectUniqueName": "C:\\Users\\leosp\\Documents\\Unity Projects\\AStarC#\\AStarC#.csproj",
         "projectName": "AStarC#",
-        "projectPath": "D:\\Unity Projects\\AStarCSharp\\AStarC#.csproj",
+        "projectPath": "C:\\Users\\leosp\\Documents\\Unity Projects\\AStarC#\\AStarC#.csproj",
         "packagesPath": "C:\\Users\\leosp\\.nuget\\packages\\",
-        "outputPath": "D:\\Unity Projects\\AStarCSharp\\obj\\",
+        "outputPath": "C:\\Users\\leosp\\Documents\\Unity Projects\\AStarC#\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\leosp\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\leosp\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -48,35 +43,16 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.12, 6.0.12]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[6.0.12, 6.0.12]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.12, 6.0.12]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.12, 6.0.12]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

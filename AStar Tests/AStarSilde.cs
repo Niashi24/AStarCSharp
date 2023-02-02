@@ -104,7 +104,7 @@ namespace NS.AStar.Tests
 			}
         }
 
-        public static void Main()
+        public static void MainSlide()
 		{
 			TestSlides(new string[]
 			{
@@ -117,6 +117,7 @@ namespace NS.AStar.Tests
 				"467813250",
 				"354278160"
 			}, 3);
+			// Average time for 3x3: ~20ms
 
 			TestSlides(new string[]
 			{
@@ -124,6 +125,8 @@ namespace NS.AStar.Tests
 				"4C8E2F5617D3AB90",
 				"D85A21ECF936B740"
 			}, 4);
+			// Average time for 4x4: ~100s
+			// Number of possible nodes grows factorialy (very high)
 		}
 
 		public static void TestSlides(string[] tests, int s)

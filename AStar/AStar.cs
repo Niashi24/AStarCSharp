@@ -55,7 +55,7 @@ namespace NS.AStar
 						path.Add(current);
 					}
 					path.Reverse();
-					Console.WriteLine($"Processed {F.Count} nodes.");
+					// Console.WriteLine($"Processed {F.Count} nodes.");
 					return (path, F[end]);  // Done!
 				}
 
@@ -75,7 +75,8 @@ namespace NS.AStar
 				}
 			}
 
-			throw new Exception($"A* failed to find a solution after searching {F.Count} nodes");
+			// throw new Exception($"A* failed to find a solution after searching {F.Count} nodes");
+			return (null, -1);
 		}
 	}
 	
