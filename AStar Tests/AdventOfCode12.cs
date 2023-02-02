@@ -10,11 +10,14 @@ namespace NS.AStar.Tests
             public int w {get; private set;}
             public int h {get; private set;}
 
-            public HillGraph(Dictionary<(int, int), char> posToHeightDict, int w, int h)
+            public (int, int) End {get; private set;}
+
+            public HillGraph(Dictionary<(int, int), char> posToHeightDict, (int, int) end, int w, int h)
             {
                 this.posToHeightDict = posToHeightDict;
                 this.w = w;
                 this.h = h;
+                this.End = end;
             }
 
             public IEnumerable<(int, int)> GetNeighbors((int, int) a)
@@ -32,16 +35,16 @@ namespace NS.AStar.Tests
                     yield return (x, y + 1);
             }
 
-            public int Heuristic((int, int) a, (int, int) end)
+            public int HeuristicToEnd((int, int) a)
             {
                 int square(int x) => x * x;
                 int score = 0;
 
-                score += square(a.Item1 - end.Item1);
-                score += square(a.Item2 - end.Item2);
+                score += square(a.Item1 - End.Item1);
+                score += square(a.Item2 - End.Item2);
 
                 int h1 = posToHeightDict[a];
-                int h2 = posToHeightDict[end];
+                int h2 = posToHeightDict[End];
                 if (h1 < h2)
                     score = (int)Math.Sqrt(score + square(h2 - h1));
                 else
@@ -106,16 +109,16 @@ namespace NS.AStar.Tests
                 }
             }
 
-            HillGraph graph = new(map, w, h);
+            HillGraph graph = new(map, e, w, h);
             IntIntTupleComparer nodeComparer = new();
 
             // Part 1:
-            var (path, cost) = AStar.AStarSearch(graph, nodeComparer, s, e);
+            var (path, cost) = AStar.AStarSearch(graph, nodeComparer, s);
 
             Console.WriteLine($"Part 1: {path.Count - 1}");
 
             int minDistance = aLocations
-                .Select(x => AStar.AStarSearch(graph, nodeComparer, x, e)) // get path and distance
+                .Select(x => AStar.AStarSearch(graph, nodeComparer, x)) // get path and distance
                 .Select(x => x.Item2) // get distance only
                 .Where(x => x != -1)
                 .Min() - 1; // get smallest and subtract one

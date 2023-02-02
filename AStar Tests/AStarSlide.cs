@@ -27,15 +27,27 @@ namespace NS.AStar.Tests
 		{
 			public int s {get; private set;}
 
-			public (int, int)[] onetotwodarr;
+			public (int, int)[] oneDToTwoDArr {get; set;}
 
-			public SlideGraph(int s)
+			public (char[], int) End {get; private set;}
+
+			public Dictionary<char, int> EndCharToIndex {get; private set;}
+
+			public SlideGraph(int s, (char[], int) End)
 			{
 				this.s = s;
+				this.End = End;
 
-				onetotwodarr = Enumerable.Range(0, s * s)
+				oneDToTwoDArr = Enumerable.Range(0, s * s)
 					.Select(i => OneDToTwoD(i, s))
 					.ToArray();
+
+				EndCharToIndex = new(s*s);
+
+				for (int i = 0; i < End.Item1.Length; i++)
+				{
+					EndCharToIndex[End.Item1[i]] = i;
+				}
 			}
 
 			public (int, int) OneDToTwoD(int i, int s)
@@ -64,7 +76,7 @@ namespace NS.AStar.Tests
             public IEnumerable<(char[], int)> GetNeighbors((char[], int) a)
             {
 				int i = a.Item2;
-                var (x, y) = onetotwodarr[i];
+                var (x, y) = oneDToTwoDArr[i];
 				if (x != 0)
 					yield return Swap0(a, i - 1);
 				if (x != s - 1)
@@ -82,22 +94,15 @@ namespace NS.AStar.Tests
 				return -1;
 			}
 
-            public int Heuristic((char[], int) a, (char[], int) end)
+            public int HeuristicToEnd((char[], int) a)
             {
                 int heuristic = 0;
 
-				Dictionary<char, int> charToIndexInEnd = new(s*s);
-
-				for (int i = 0; i < end.Item1.Length; i++)
-				{
-					charToIndexInEnd[end.Item1[i]] = i;
-				}
-
 				for (int i = 0; i < a.Item1.Length; i++)
 				{
-					int cI = charToIndexInEnd[a.Item1[i]];
-					var (cX, cY) = onetotwodarr[cI];
-					var (eX, eY) = onetotwodarr[i];
+					int cI = EndCharToIndex[a.Item1[i]];
+					var (cX, cY) = oneDToTwoDArr[cI];
+					var (eX, eY) = oneDToTwoDArr[i];
 					heuristic += Math.Abs(eX - cX) + Math.Abs(eY - cY);
 				}
 
@@ -159,7 +164,7 @@ namespace NS.AStar.Tests
 				.Select(x => (x.ToCharArray(), x.IndexOf('0')))
 				.ToArray();
 
-			SlideGraph graph = new(s);
+			SlideGraph graph = new(s, end);
 			SlideNodeEqualityComparer nodeComparer = new();
 
             System.Diagnostics.Stopwatch stopwatch = new();
@@ -167,7 +172,7 @@ namespace NS.AStar.Tests
 			int sumMoves = 0;
 			for (int i = 0; i < tests.Length; i++)
 			{
-				var (path, cost) = IDAStar.IDAStarSearch(graph, nodeComparer, testNodes[i], end);
+				var (path, cost) = IDAStar.IDAStarSearch(graph, nodeComparer, testNodes[i]);
 				sumMoves += cost;
 			}
 			stopwatch.Stop();
