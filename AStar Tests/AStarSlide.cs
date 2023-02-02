@@ -47,11 +47,11 @@ namespace NS.AStar.Tests
 			public (char[], int) Swap0((char[], int) state, int i)
 			{
 				var output = new char[state.Item1.Length];
+				
 				state.Item1.CopyTo(output, 0);
 
-				char temp = output[i];
-				output[i] = output[state.Item2];
-				output[state.Item2] = temp;
+				output[i] = state.Item1[state.Item2];
+				output[state.Item2] = state.Item1[i];
 
 				return (output, i);
 			}
@@ -86,9 +86,16 @@ namespace NS.AStar.Tests
             {
                 int heuristic = 0;
 
+				Dictionary<char, int> charToIndexInEnd = new(s*s);
+
+				for (int i = 0; i < end.Item1.Length; i++)
+				{
+					charToIndexInEnd[end.Item1[i]] = i;
+				}
+
 				for (int i = 0; i < a.Item1.Length; i++)
 				{
-					int cI = GetCharPos(a.Item1, end.Item1[i]);
+					int cI = charToIndexInEnd[a.Item1[i]];
 					var (cX, cY) = onetotwodarr[cI];
 					var (eX, eY) = onetotwodarr[i];
 					heuristic += Math.Abs(eX - cX) + Math.Abs(eY - cY);
