@@ -38,7 +38,7 @@ namespace NS.AStar
             if (f > bound) return f;
             if (nodeComparer.Equals(curr, graph.End)) return FOUND;  // FOUND
             int min = INF;
-            foreach (var succ in graph.GetNeighbors(curr).OrderBy(x => graph.HeuristicToEnd(x)))
+            foreach (var succ in graph.GetNeighbors(curr).OrderBy(graph.HeuristicToEnd))
             {
                 if (!path.Contains(succ, nodeComparer))
                 {

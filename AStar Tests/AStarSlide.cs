@@ -5,9 +5,9 @@ namespace NS.AStar.Tests
 {
 	public class AStarSlide2
 	{
-        public class SlideNodeEqualityComparer : IEqualityComparer<(char[], int)>
+        public class SlideNodeEqualityComparer : IEqualityComparer<(byte[], int)>
         {
-            public bool Equals((char[], int) x, (char[], int) y)
+            public bool Equals((byte[], int) x, (byte[], int) y)
             {
 				// Check just if the position of the 0's match, may be faster
 				if (x.Item2 != y.Item2) return false;
@@ -16,24 +16,26 @@ namespace NS.AStar.Tests
 				return true;
             }
 
-            public int GetHashCode([DisallowNull] (char[], int) obj)
+            public int GetHashCode([DisallowNull] (byte[], int) obj)
             {
-                return 2 * ((System.Collections.IStructuralEquatable)obj.Item1)
-					.GetHashCode(EqualityComparer<char>.Default);
+                return ((System.Collections.IStructuralEquatable)obj.Item1)
+					.GetHashCode(EqualityComparer<byte>.Default);
             }
         }
 
-		public class SlideGraph : Graph<(char[], int)>
+		public class SlideGraph : Graph<(byte[], int)>
 		{
 			public int s {get; private set;}
 
 			public (int, int)[] oneDToTwoDArr {get; set;}
 
-			public (char[], int) End {get; private set;}
+			public (byte[], int) End {get; private set;}
 
-			public Dictionary<char, int> EndCharToIndex {get; private set;}
+			public int[] endCharArr {get; private set;}
 
-			public SlideGraph(int s, (char[], int) End)
+			private int[] indexToHeuristic;
+
+			public SlideGraph(int s, (byte[], int) End)
 			{
 				this.s = s;
 				this.End = End;
@@ -42,11 +44,22 @@ namespace NS.AStar.Tests
 					.Select(i => OneDToTwoD(i, s))
 					.ToArray();
 
-				EndCharToIndex = new(s*s);
+				endCharArr = new int[s*s];
 
 				for (int i = 0; i < End.Item1.Length; i++)
 				{
-					EndCharToIndex[End.Item1[i]] = i;
+					endCharArr[End.Item1[i]] = i;
+				}
+
+				indexToHeuristic = new int[s * s * s * s];
+				for (int i = 0; i < s * s; i++)
+				{
+					for (int j = 0; j < s * s; j++)
+					{
+						var (x1, y1) = oneDToTwoDArr[i];
+						var (x2, y2) = oneDToTwoDArr[j];
+						indexToHeuristic[i + j * s * s] = Math.Abs(x2 - x1) + Math.Abs(y2 - y1);
+					}
 				}
 			}
 
@@ -56,9 +69,9 @@ namespace NS.AStar.Tests
 				return (mod, div);
 			}
 
-			public (char[], int) Swap0((char[], int) state, int i)
+			public (byte[], int) Swap0((byte[], int) state, int i)
 			{
-				var output = new char[state.Item1.Length];
+				var output = new byte[state.Item1.Length];
 				
 				state.Item1.CopyTo(output, 0);
 
@@ -68,12 +81,12 @@ namespace NS.AStar.Tests
 				return (output, i);
 			}
 
-            public int MoveCost((char[], int) a, (char[], int) aNeighbor)
+            public int MoveCost((byte[], int) a, (byte[], int) aNeighbor)
             {
                 return 1;
             }
 
-            public IEnumerable<(char[], int)> GetNeighbors((char[], int) a)
+            public IEnumerable<(byte[], int)> GetNeighbors((byte[], int) a)
             {
 				int i = a.Item2;
                 var (x, y) = oneDToTwoDArr[i];
@@ -87,29 +100,20 @@ namespace NS.AStar.Tests
 					yield return Swap0(a, i + s);
             }
 
-			public int GetCharPos(char[] a, char c)
-			{
-				for (int i = 0; i < a.Length; i++)
-					if (a[i] == c) return i;
-				return -1;
-			}
-
-            public int HeuristicToEnd((char[], int) a)
+            public int HeuristicToEnd((byte[], int) a)
             {
                 int heuristic = 0;
 
 				for (int i = 0; i < a.Item1.Length; i++)
 				{
-					int cI = EndCharToIndex[a.Item1[i]];
-					var (cX, cY) = oneDToTwoDArr[cI];
-					var (eX, eY) = oneDToTwoDArr[i];
-					heuristic += Math.Abs(eX - cX) + Math.Abs(eY - cY);
+					int cI = endCharArr[a.Item1[i]];
+					heuristic += indexToHeuristic[i + cI * s * s];
 				}
 
 				return heuristic;
             }
 
-			public string StateToString(char[] state)
+			public string StateToString(byte[] state)
 			{
 				string output = "";
 
@@ -125,43 +129,43 @@ namespace NS.AStar.Tests
 
         public static void Main(string[] args)
 		{
-			TestSlides(new string[]
+			TestSlides(new byte[][]
 			{
-				"271543860",
-				"472861350",
-				"271384650",
-				"462817350",
-				"267185340",
-				"315642870",
-				"467813250",
-				"354278160"
+				new byte[] {2,7,1,5,4,3,8,6,0},
+				new byte[] {4,7,2,8,6,1,3,5,0},
+				new byte[] {2,7,1,3,8,4,6,5,0},
+				new byte[] {4,6,2,8,1,7,3,5,0},
+				new byte[] {2,6,7,1,8,5,3,4,0},
+				new byte[] {3,1,5,6,4,2,8,7,0},
+				new byte[] {4,6,7,8,1,3,2,5,0},
+				new byte[] {3,5,4,2,7,8,1,6,0}
 			}, 3);
 			// Average time for 3x3: ~20ms
 
-			TestSlides(new string[]
+			TestSlides(new byte[][]
 			{
-				"3DBC42A9156F78E0",
-				"4C8E2F5617D3AB90",
-				"D85A21ECF936B740"
+				// new byte[] {12,7,1,10,6,4,5,8,11,3,13,15,14,9,2,0},
+				// new byte[] {2,15,1,13,5,10,11,6,7,14,12,3,9,8,4,0},
+				new byte[] {10,11,2,5,9,1,14,8,4,7,15,3,0,12,13,6}
 			}, 4);
 			// Average time for 4x4: ~60s
 			// Number of possible nodes grows factorialy (very high)
 		}
 
-		public static void TestSlides(string[] tests, int s)
+		public static void TestSlides(byte[][] tests, int s)
 		{
 			if (tests.Length == 0) return;
 
-			(char[], int) end = default;
+			(byte[], int) end = default;
 			if (s == 4)
-				end = ("123456789ABCDEF0".ToCharArray(), 15);
+				end = (new byte[] {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0}, 15);
 			else if (s == 3)
-				end = ("123456780".ToCharArray(), 8);
+				end = (new byte[] {1,2,3,4,5,6,7,8,0}, 8);
 			else
 				return;
 
-			(char[], int)[] testNodes = tests
-				.Select(x => (x.ToCharArray(), x.IndexOf('0')))
+			(byte[], int)[] testNodes = tests
+				.Select(x => (x, Array.IndexOf(x, (byte)0)))
 				.ToArray();
 
 			SlideGraph graph = new(s, end);
