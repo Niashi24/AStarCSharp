@@ -1,3 +1,4 @@
+namespace NS.AStar;
 
 namespace NS.AStar
 {
