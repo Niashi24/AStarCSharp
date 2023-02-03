@@ -25,7 +25,7 @@ public class AStarSlide2
             }
         }
 
-    public class SlideGraph : Graph<(byte[], int)>
+    public class SlideGraph : IGraph<(byte[], int)>
     {
         public int s { get; private set; }
 

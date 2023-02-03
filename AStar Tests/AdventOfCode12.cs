@@ -4,7 +4,7 @@ namespace NS.AStar.Tests;
 
 public class AdventOfCode12
 {
-    public class HillGraph : Graph<(int, int)>
+    public class HillGraph : IGraph<(int, int)>
     {
         public Dictionary<(int, int), char> posToHeightDict { get; private set; }
         public int w { get; private set; }
