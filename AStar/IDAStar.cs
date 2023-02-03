@@ -13,13 +13,14 @@ namespace NS.AStar
         {
             // int bound = graph.Heuristic(start);
             Stack<TNode> path = new();
+            HashSet<TNode> pathSet = new(nodeComparer);
             TNode current = start;
 
             int bound = graph.HeuristicToEnd(current);
             path.Push(start);
             while (true)
             {
-                int t = Search(graph, nodeComparer, path, 0, bound);
+                int t = Search(graph, nodeComparer, path, pathSet, 0, bound);
                 if (t == FOUND) return (path.ToList(), bound);
                 if (t == INF) throw new Exception("IDAStar could not find a path");
                 bound = t;
@@ -30,6 +31,7 @@ namespace NS.AStar
 			Graph<TNode> graph, 
 			IEqualityComparer<TNode> nodeComparer,
             Stack<TNode> path,
+            HashSet<TNode> pathSet,
             int g, 
             int bound)
         {
@@ -40,12 +42,14 @@ namespace NS.AStar
             int min = INF;
             foreach (var succ in graph.GetNeighbors(curr).OrderBy(graph.HeuristicToEnd))
             {
-                if (!path.Contains(succ, nodeComparer))
+                if (!pathSet.Contains(succ))
                 {
                     path.Push(succ);
-                    int t = Search(graph, nodeComparer, path, g + graph.MoveCost(curr, succ), bound);
+                    pathSet.Add(succ);
+                    int t = Search(graph, nodeComparer, path, pathSet,g + graph.MoveCost(curr, succ), bound);
                     if (t == FOUND) return FOUND;
                     if (t < min) min = t;
+                    pathSet.Remove(succ);
                     path.Pop();
                 }
             }

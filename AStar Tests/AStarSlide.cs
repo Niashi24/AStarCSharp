@@ -18,8 +18,9 @@ namespace NS.AStar.Tests
 
             public int GetHashCode([DisallowNull] (byte[], int) obj)
             {
-                return ((System.Collections.IStructuralEquatable)obj.Item1)
-					.GetHashCode(EqualityComparer<byte>.Default);
+	            var hash = new HashCode();
+	            hash.AddBytes(obj.Item1);
+	            return hash.ToHashCode();
             }
         }
 
