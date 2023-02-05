@@ -17,13 +17,13 @@ public class AStarSlide2
             return true;
         }
 
-            public int GetHashCode([DisallowNull] (byte[], int) obj)
-            {
-	            var hash = new HashCode();
-	            hash.AddBytes(obj.Item1);
-	            return hash.ToHashCode();
-            }
+        public int GetHashCode([DisallowNull] (byte[], int) obj)
+        {
+	        var hash = new HashCode();
+	        hash.AddBytes(obj.Item1);
+	        return hash.ToHashCode();
         }
+    }
 
     public class SlideGraph : IGraph<(byte[], int)>
     {
