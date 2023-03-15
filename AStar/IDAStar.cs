@@ -18,10 +18,11 @@ public static class IDAStar
 
         int bound = graph.HeuristicToEnd(current);
         path.Push(start);
+        pathSet.Add(start);
         while (true)
         {
             int t = Search(graph, nodeComparer, path, pathSet, 0, bound);
-            if (t == FOUND) return (path.ToList(), bound);
+            if (t == FOUND) return (path.Reverse().ToList(), bound);
             if (t == INF) throw new Exception("IDAStar could not find a path");
             bound = t;
         }

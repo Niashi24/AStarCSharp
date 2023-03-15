@@ -1,7 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace NS.AStar.Tests;
+namespace NS.AStar.Examples;
 
+// This class is used to solve Day 12 of Advent of Code 2022: https://adventofcode.com/2022/day/12
 public class AdventOfCode12
 {
     public class HillGraph : IGraph<(int, int)>
@@ -37,24 +38,8 @@ public class AdventOfCode12
 
         public int HeuristicToEnd((int, int) a)
         {
-            int square(int x)
-            {
-                return x * x;
-            }
-
-            var score = 0;
-
-            score += square(a.Item1 - End.Item1);
-            score += square(a.Item2 - End.Item2);
-
-            int h1 = posToHeightDict[a];
-            int h2 = posToHeightDict[End];
-            if (h1 < h2)
-                score = (int)Math.Sqrt(score + square(h2 - h1));
-            else
-                score = (int)Math.Sqrt(score) + 1;
-
-            return score;
+            // return the Manhattan distance
+            return Math.Abs(End.Item1 - a.Item1) + Math.Abs(End.Item2 - a.Item2);
         }
 
         public int MoveCost((int, int) a, (int, int) aNeighbor)

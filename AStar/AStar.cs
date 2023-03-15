@@ -44,7 +44,7 @@ public static class AStar
                 }
 
                 path.Reverse();
-                // Console.WriteLine($"Processed {F.Count} nodes.");
+                // Console.WriteLine($"Found path after processing {F.Count} nodes.");
                 return (path, F[graph.End]); // Done!
             }
 
